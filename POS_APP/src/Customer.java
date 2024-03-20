@@ -36,7 +36,7 @@ public class Customer {
             return result.get(0);
         }
     }
-
+    public static boolean isExist(String phone){return getCustomer(phone) != null;}
     public int getId(){return this.id;}
     public String getPhone(){return this.phone;}
     public String getName(){return this.name;}
