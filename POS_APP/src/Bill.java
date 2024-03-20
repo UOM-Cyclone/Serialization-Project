@@ -1,8 +1,9 @@
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Vector;
+import java.io.Serializable;
 
-public class Bill {
+public class Bill implements Serializable{
     private static int count = 0;
     private static Vector<Bill> closedBills = new Vector<>();
 

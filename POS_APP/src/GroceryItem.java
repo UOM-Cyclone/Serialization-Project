@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 
-public class GroceryItem {
+public class GroceryItem implements Serializable {
     private static HashMap<Integer,GroceryItem> items = new HashMap<>();
     private static int count = 0;
     private final String name;
