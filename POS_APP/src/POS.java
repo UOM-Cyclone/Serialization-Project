@@ -1,39 +1,52 @@
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.text.NumberFormat;
+import java.util.*;
 
 public class POS {
     Scanner scan = new Scanner(System.in);
     Map<String, String> cashiers = new HashMap<>();
+    Vector<Bill> pendingBills = new Vector<Bill>();
+    Cashier currentCashier;
 
-    void start() {
-        do {
-            System.out.print("Username : ");
-            String username = scan.nextLine();
-            System.out.print("Password : ");
-            String password = scan.nextLine();
-
-            if (password.equals(cashiers.get(username))) {
-                System.out.println("Login successful!");
-                mainMenu();
-                break;
-            } else {
-                System.out.print("Wrong password.Try again.\n");
+    void start() throws IOException {
+        String username;
+        String password;
+        while (true) {
+            while (true) {
+                System.out.print("Username : ");
+                username = scan.nextLine();
+                if (Cashier.isExist(username)) {
+                    break;
+                } else {
+                    System.out.println("Enter valid input");
+                }
             }
-        } while (true);
 
-
+            while (true) {
+                System.out.print("Password : ");
+                password = scan.nextLine();
+                if (password.equals(Cashier.getCashier(username).getPassword())) {
+                    currentCashier = Cashier.getCashier(username);
+                    System.out.println("Login successful!");
+                    mainMenu();
+                    break;
+                } else {
+                    System.out.println("Please enter valid password");
+                }
+            }
+        }
     }
 
-     void mainMenu() {
+     void mainMenu() throws IOException {
         do {
-            System.out.println("Select the option : ");
             System.out.println("""
                     1) New Bill
                     2) Pending Bills
                     3) Register New Customer
                     4) Logout""");
+            System.out.print("Select the option : ");
             String userInput = scan.nextLine();
             switch (userInput) {
                 case "1":
@@ -43,7 +56,7 @@ public class POS {
                     pendingBills();
                     break;
                 case "3":
-                    RegisterNewCustomer();
+//                    RegisterNewCustomer();
                     break;
                 case "4":
                     return;
@@ -54,48 +67,106 @@ public class POS {
         } while (true);
     }
 
-    void newBill() {
-        do {
-            System.out.println("Enter Customer ID or 0 to skip : ");
-            String customerID = scan.nextLine();
-            if (customerID.equals("0")) {
-                buyProduct();
-                return;
-            } else if (customerID.isExit()) {
-                buyProduct();
-                return;
+    private void pendingBills() {
+    }
+
+    void newBill() throws IOException {
+
+            while (true) {
+
+                System.out.println("Enter Customer phone or 0 to skip : ");
+                String customerID = scan.nextLine();
+                if (customerID.equals("0")) {
+                    Bill newBill = new Bill(currentCashier.getID(), 0);
+                    handleBill(newBill);
+                    return;
+                } else if (customerID.length() == 0 && Customer.isExist(customerID)) {
+                    Bill newBill = new Bill(currentCashier.getID(), currentCashier.getID());
+                    handleBill(newBill);
+                    return;
+                } else {
+                    System.out.println("Enter valid input");
+                }
+
+            }
+
+    }
+
+
+    public void handleBill(Bill currentBill) throws IOException {
+        String inst = """
+                1) Add item
+                2) Remove item
+                3) Hold Bill
+                4) Close Bill
+                """;
+
+        while (true){
+            System.out.println("Added items");
+            currentBill.printProcessingBill();
+            System.out.println("\n" + inst);
+            System.out.print("Enter number : ");
+            String userInput = scan.nextLine();
+            switch (userInput){
+                case "1":
+                    GroceryItem item = getItemDetails();
+                    int qty = scan.nextInt();
+                    double dis = scan.nextDouble();
+                    currentBill.addGroceryItem(item,qty,dis);
+                    break;
+                case "2":
+                    break;
+                case "3":
+                    System.out.println("Your bill is held");
+                    return;
+                case "4":
+                    currentBill.close();
+                    currentBill.printClosedBill();
+                    for (int i = 0; i < pendingBills.size(); i++){
+                        if (pendingBills.get(i) == currentBill){
+                            pendingBills.remove(pendingBills.get(i));
+                        }
+                    }
+                    return;
+                default:
+                    System.out.println("Enter valid input");
+            }
+        }
+    }
+
+    public GroceryItem getItemDetails() throws IOException {
+        InputStreamReader r = null;
+        BufferedReader br = null;
+        GroceryItem item = null;
+        try {
+            r = new InputStreamReader(System.in);
+            br = new BufferedReader(r);
+            System.out.print("Enter the item code : ");
+
+            String item_code = br.readLine();
+            if(GroceryItem.isExist(Integer.parseInt(item_code))) {
+                item = GroceryItem.getItem(Integer.parseInt(item_code));
             } else {
-                System.out.println("Invalid customer ID ");
-            }
-        }while (true);
-    }
-
-    void pendingBills() {
-        do {
-            System.out.println("Pending bills");
-            //display bills
-
-            System.out.print("Enter a bil number : ");
-            String pendingBillNumber = scan.nextLine();
-            if(pendingBillNumber.isExit()){
-                buyProduct();
-                return;
-            }
-            else {
-                System.out.println("Invalid Bill Number ");
+                throw new ItemCodeNotFound();
             }
 
-        }while (true);
-    }
-
-    void buyProduct() {
-        do{
-
-        }while (true);
-    }
-
-    void RegisterNewCustomer() {
+        } catch (ItemCodeNotFound e) {
+            System.out.println("Item not founded");
+        } catch (NumberFormatException e) {
+            System.out.println("Enter valid input");
+        }catch (IOException e) {
+            System.out.println("Enter valid");;
+        } finally {
+            if(br != null) {
+                br.close();
+            }
+            if(r != null) {
+                r.close();
+            }
+        }
+        return item;
     }
 
 
 }
+

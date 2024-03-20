@@ -29,7 +29,7 @@ public class Bill {
         this.totalDiscount += discountValue;
         this.totalPrice += amount;
 
-        BuyListItem temp = new BuyListItem(item.getID(), item.getName(), item.getPrice(), quantity, discount, amount);
+        BuyListItem temp = new BuyListItem(item.getId(), item.getName(), item.getPrice(), quantity, discount, amount);
         listItems.add(temp);
     }
 
