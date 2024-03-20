@@ -1,5 +1,6 @@
-import java.io.Serializable;
+import java.io.*;
 import java.util.Date;
+import java.util.Map;
 import java.util.Vector;
 
 public class Bill implements Serializable {
@@ -80,4 +81,33 @@ public class Bill implements Serializable {
 
     public int getListLength(){return this.listItems.size();}
     public int getId(){return this.id;}
+
+    public static void saveCashiers(){
+        try {
+            FileOutputStream file = new FileOutputStream("bills.cyc");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(closedBills);
+            out.close();
+            file.close();
+        } catch (IOException e) {
+            System.out.println("ERROR bills data was not saved !");
+        }
+    }
+
+    public static void loadGBillData(){
+        try {
+            FileInputStream file = new FileInputStream("bills.cyc");
+            ObjectInputStream in = new ObjectInputStream(file);
+            closedBills = (Vector<Bill>) in.readObject();
+            count = closedBills.size();
+            in.close();
+            file.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("Bill data not loaded");
+        } catch (IOException e) {
+            System.out.println("ERROR! Saved data not loaded");
+        } catch (ClassNotFoundException e) {
+            System.out.println("This is invalid file");
+        }
+    }
 }
