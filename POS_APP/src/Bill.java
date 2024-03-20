@@ -29,7 +29,7 @@ public class Bill {
         this.totalDiscount += discountValue;
         this.totalPrice += amount;
 
-        BuyListItem temp = new BuyListItem(item.getID(), item.getName(), item.getPrice(), quantity, discount, amount);
+        BuyListItem temp = new BuyListItem(item.getId(), item.getName(), item.getPrice(), quantity, discount, amount);
         listItems.add(temp);
     }
 
@@ -51,6 +51,7 @@ public class Bill {
                 --------------------------
                 Total discount : Rs. %.2f
                 Total price    : Rs. %.2f
+                Time    :
                 --------------------------
                 """,this.totalDiscount, this.totalPrice);
 
@@ -75,6 +76,7 @@ public class Bill {
 
     public void close(){
         closedBills.add(this);
+        this.closingTime = new Date();
     }
 
     public int getListLength(){return this.listItems.size();}
