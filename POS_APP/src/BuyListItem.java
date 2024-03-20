@@ -1,4 +1,6 @@
-public class BuyListItem {
+import java.io.Serializable;
+
+public class BuyListItem implements Serializable {
     private int itemCode;
     private String itemName;
     private int quantity;

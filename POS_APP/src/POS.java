@@ -1,10 +1,11 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.text.NumberFormat;
 import java.util.*;
 
-public class POS {
+public class POS implements Serializable {
     Scanner scan = new Scanner(System.in);
     Map<String, String> cashiers = new HashMap<>();
     Vector<Bill> pendingBills = new Vector<Bill>();
@@ -109,12 +110,37 @@ public class POS {
             String userInput = scan.nextLine();
             switch (userInput){
                 case "1":
-                    GroceryItem item = getItemDetails();
-                    int qty = scan.nextInt();
-                    double dis = scan.nextDouble();
+                    GroceryItem item;
+                    do{
+                        item = getItemDetails();
+                    }while (item == null);
+                    int qty;
+                    double dis;
+                    while (true){
+                        try {
+                            System.out.println("Enter the quantity : ");
+                            qty = scan.nextInt();
+                            System.out.println("Enter the discount : ");
+                            dis = scan.nextDouble();
+                            break;
+                        } catch (Exception e){
+                            System.out.println("Enter valid input");
+                        }
+                    }
                     currentBill.addGroceryItem(item,qty,dis);
                     break;
                 case "2":
+                    int removeIndex;
+                    while (true) {
+                        try {
+                            System.out.println("Enter number you want to remove : ");
+                            removeIndex = scan.nextInt();
+                            break;
+                        } catch (Exception e) {
+                            System.out.println("Enter valid input");
+                        }
+                    }
+                    currentBill.removeGroceryItem(removeIndex-1);
                     break;
                 case "3":
                     System.out.println("Your bill is held");
@@ -166,6 +192,8 @@ public class POS {
         }
         return item;
     }
+
+
 
 
 }

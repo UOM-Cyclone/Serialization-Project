@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.Vector;
 
-public class Customer {
+public class Customer implements Serializable {
     private static Vector<Customer> customers = new Vector<>();
     private final String name;
     private static int count = 0;

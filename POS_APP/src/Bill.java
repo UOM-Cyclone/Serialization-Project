@@ -1,7 +1,8 @@
+import java.io.Serializable;
 import java.util.Date;
 import java.util.Vector;
 
-public class Bill {
+public class Bill implements Serializable {
     private static int count = 0;
     private static Vector<Bill> closedBills = new Vector<>();
 
