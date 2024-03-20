@@ -32,6 +32,18 @@ public class Cashier {
         return null;
     }
 
+    static Cashier getCashier(int userId){
+
+        Object[] userNames = cashiers.keySet().toArray();
+        for(Object username: userNames){
+            if (cashiers.get(username).getID() == userId){
+                return cashiers.get(username);
+            }
+        } 
+
+        return null;
+    }
+
     public Cashier(String name, String userName, String pwd){
         this.name = name;
         this.userName = userName;

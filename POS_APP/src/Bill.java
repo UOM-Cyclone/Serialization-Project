@@ -1,4 +1,5 @@
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Vector;
 
 public class Bill {
@@ -7,11 +8,11 @@ public class Bill {
 
     final private String BRANCH = "Katubedda";
     
-    private Date closingTime;
+    private LocalDateTime closingTime;
     private int cashierId;
     private int customerId;
     private int id;
-    private boolean isClosed=false;
+    private boolean isClosed = false;
     private Vector<BuyListItem> listItems = new Vector<>();
     private double totalDiscount = 0;
     private double totalPrice = 0;
@@ -51,7 +52,6 @@ public class Bill {
                 --------------------------
                 Total discount : Rs. %.2f
                 Total price    : Rs. %.2f
-                Time    :
                 --------------------------
                 """,this.totalDiscount, this.totalPrice);
 
@@ -61,22 +61,28 @@ public class Bill {
     public void printClosedBill(){
         // Cashier cashier = Cashier.getCashier(BRANCH)
 
-        String customer = customerId==0 ? "Unregistered Customer" : String.valueOf(customerId);
+        String customer = customerId==0 ? "Unregistered Customer" : Customer.getCustomer(customerId).getName();
+        String cashier = Cashier.getCashier(this.cashierId).getName();
         String head = String.format("""
                     Super Saving
                 ---------------------
                 Branch : %s
-                Cashier Id : %d
+                Cashier : %s
                 Customer : %s
-                """,this.BRANCH, this.cashierId, customer);
+                """,this.BRANCH, cashier, customer);
         System.out.println(head+"\n");
         this.printProcessingBill();
-        System.out.println("Thank you for choosing us.");
+        DateTimeFormatter myFormatObj = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+        String formattedDate = this.closingTime.format(myFormatObj);
+        System.out.println("--------------------------");
+        System.out.println("Printed : " + formattedDate);
+        System.out.println("**Thank you for choosing us.**");
     }
 
     public void close(){
         closedBills.add(this);
-        this.closingTime = new Date();
+        this.closingTime = LocalDateTime.now();
+        this.isClosed = true;
     }
 
     public int getListLength(){return this.listItems.size();}
