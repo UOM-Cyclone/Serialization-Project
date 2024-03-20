@@ -1,4 +1,5 @@
-import java.io.Serializable;
+import java.io.*;
+import java.util.Map;
 import java.util.Vector;
 
 public class Customer implements Serializable {
@@ -41,4 +42,32 @@ public class Customer implements Serializable {
     public int getId(){return this.id;}
     public String getPhone(){return this.phone;}
     public String getName(){return this.name;}
+    public static void saveCustomers(){
+        try {
+            FileOutputStream file = new FileOutputStream("customers.cyc");
+            ObjectOutputStream out = new ObjectOutputStream(file);
+            out.writeObject(customers);
+            out.close();
+            file.close();
+        } catch (IOException e) {
+            System.out.println("ERROR customers data was not saved !");
+        }
+    }
+
+    public static void loadGCustomersData(){
+        try {
+            FileInputStream file = new FileInputStream("customers.cyc");
+            ObjectInputStream in = new ObjectInputStream(file);
+            customers = (Vector<Customer>) in.readObject();
+            count = customers.size();
+            in.close();
+            file.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("customers data not loaded");
+        } catch (IOException e) {
+            System.out.println("ERROR! Saved data not loaded");
+        } catch (ClassNotFoundException e) {
+            System.out.println("This is invalid file");
+        }
+    }
 }
