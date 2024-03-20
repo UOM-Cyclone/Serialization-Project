@@ -12,6 +12,10 @@ public class POS implements Serializable {
     Cashier currentCashier;
 
     void start() throws IOException {
+        Cashier.loadGCashierData();
+        Customer.loadGCustomersData();
+        Bill.loadGBillData();
+        GroceryItem.loadItemData();
         String username;
         String password;
         while (true) {
@@ -60,6 +64,10 @@ public class POS implements Serializable {
 //                    RegisterNewCustomer();
                     break;
                 case "4":
+                Bill.saveCashiers();;
+                Customer.saveCustomers();
+                Cashier.saveCashiers();
+                GroceryItem.saveItems();
                     return;
                 default:
                     System.out.println("Please enter a valid input.\n");
